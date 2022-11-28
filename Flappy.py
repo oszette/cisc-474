@@ -1,5 +1,5 @@
-import time
-import pygame
+#import time
+#import pygame
 import flappy_bird_gym
 import numpy as np
 import itertools
@@ -7,8 +7,8 @@ import itertools
 class Flappy:
 
     def __init__(self, max_x, max_y, step_x, step_y, epsilon, alpha, gamma):
-        self.state_space_x = np.linspace(0, max_x, step_x)
-        self.state_space_y = np.linspace(-max_y, max_y, step_y)
+        self.state_space_x = self.linspace(0, max_x, step_x)
+        self.state_space_y = self.linspace(-max_y, max_y, step_y)
         self.qtable = np.zeros((len(self.state_space_x)*len(self.state_space_y), 2))
         self.discrete_state_space = list(itertools.product(self.state_space_x, self.state_space_y))
         self.epsilon = epsilon
@@ -19,9 +19,9 @@ class Flappy:
         self.actions = [0, 1]
         self.env = flappy_bird_gym.make("FlappyBird-v0")
 
-    #get discrete value based on state space (rounded down) (maybe change, rounded to nearest int?)
-    def get_discrete_value(val, state_space):
-        return min(state_space, key=lambda x:abs(x-val))
+    #help function
+    def linspace(self, start, stop, step_size):
+        return np.around(np.linspace(start, stop, int((stop - start) / step_size + 1)), 2)
 
     #returns the state correspoding to the location (the position index of location in self.discrete_state_space)
     def get_state_from_location(self, location):
@@ -47,5 +47,5 @@ class Flappy:
     
     #sarsa learning
     def sarsa_learning(self):
-        #resets the environment and returns the initial location
-        location = self.env.reset()
+        #resets the environment and returns the initial location (discretized to fit the state-space)
+        location = self.get_discrete_value(self.env.reset())
