@@ -7,7 +7,6 @@ import flappy_bird_gym
 def play():
     # env = gym.make("flappy_bird_gym:FlappyBird-v0")
     env = flappy_bird_gym.make("FlappyBird-v0")
-
     clock = pygame.time.Clock()
     score = 0
 
