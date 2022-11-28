@@ -16,7 +16,7 @@ class Flappy:
         self.gamma = gamma
         self.default_reward = 0
         self.death_reward = -1
-        self.actions = [0, 1]
+        self.actions = [0, 1, 2]
 
     #returns the state correspoding to the location (the position index of location in self.discrete_state_space)
     def get_state_from_location(self, location):
