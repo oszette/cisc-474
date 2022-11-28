@@ -17,6 +17,7 @@ class Flappy:
         self.default_reward = 0
         self.death_reward = -1
         self.actions = [0, 1]
+        self.env = flappy_bird_gym.make("FlappyBird-v0")
 
     #returns the state correspoding to the location (the position index of location in self.discrete_state_space)
     def get_state_from_location(self, location):
@@ -30,7 +31,17 @@ class Flappy:
     def set_qvalue(self, location, action, value):
         self.qtable[self.get_state_from_location(location), action] = value
 
+    #returns the epsilon greedy action based on the current location
     def eps_greedy_action(self, location):
-        return
+        if self.epsilon > np.random.uniform():
+            return self.actions[np.random.randint(len(self.actions))]
+        return self.actions[np.argmax(self.qtable[self.get_state_from_location(location)])]
     
-
+    #returns reward based on whether or not the bird has died or not (boolean value)
+    def get_reward(self, died):
+        return self.death_reward if died else self.default_reward
+    
+    #sarsa learning
+    def sarsa_learning(self):
+        #resets the environment and returns the initial location
+        location = self.env.reset()
