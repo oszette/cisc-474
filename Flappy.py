@@ -18,6 +18,10 @@ class Flappy:
         self.death_reward = -1
         self.actions = [0, 1]
 
+    #get discrete value based on state space (rounded down) (maybe change, rounded to nearest int?)
+    def get_discrete_value(val, state_space):
+        return min(state_space, key=lambda x:abs(x-val))
+
     #returns the state correspoding to the location (the position index of location in self.discrete_state_space)
     def get_state_from_location(self, location):
         return self.discrete_state_space.index(location) 
