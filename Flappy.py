@@ -15,8 +15,8 @@ class Flappy:
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        self.default_reward = 1
-        self.death_reward = -10
+        self.default_reward = 0
+        self.death_reward = -1
         self.actions = [0, 1]
         self.env = flappy_bird_gym.make("FlappyBird-v0")
         self.nbr_episodes = nbr_episodes
@@ -64,7 +64,7 @@ class Flappy:
             location = next_location
             action = next_action
             score += reward
-            self.env.render()
+            #self.env.render()
             if done:
                 break
         return score
