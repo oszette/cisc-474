@@ -1,5 +1,5 @@
-#import time
-#import pygame
+import time
+import pygame
 import flappy_bird_gym
 import numpy as np
 import itertools
@@ -45,7 +45,11 @@ class Flappy:
         if self.epsilon > np.random.uniform():
             return self.actions[np.random.randint(len(self.actions))]
         return self.actions[np.argmax(self.qtable[self.get_state_from_location(location)])]
-    
+
+    #returns greedy action (only used in the agent_play function)
+    def greedy_action(self, location):
+        return self.actions[np.argmax(self.qtable[self.get_state_from_location(location)])]
+
     #returns reward based on whether or not the bird has died or not (boolean value)
     def get_reward(self, died):
         return self.death_reward if died else self.default_reward
@@ -73,4 +77,24 @@ class Flappy:
         for eps_idx in range(self.nbr_episodes):
             self.scores[eps_idx] = self.sample_sarsa_episode()
             print((self.scores[eps_idx], eps_idx))
-        return self.scores
+            if eps_idx % 1000 == 0 and eps_idx != 0:
+                self.agent_play()
+    
+    #renders the agent playing with the current q-table
+    def agent_play(self):
+        obs = self.env.reset()
+        score = 0
+        while True:
+            self.env.render()
+            action = self.greedy_action(obs)
+            obs, reward, done, _ = self.env.step(action)
+            score += reward
+            print(f"Obs: {obs}\n"
+              f"Score: {score}\n")
+
+            time.sleep(1 / 30)
+
+            if done:
+                self.env.close()
+                break
+
