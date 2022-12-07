@@ -15,9 +15,9 @@ class Flappy:
         self.epsilon = epsilon
         self.alpha = alpha
         self.gamma = gamma
-        self.default_reward = 1
+        self.default_reward = 0
         self.bad_region_reward = -1
-        self.score_reward = 10
+        self.score_reward = 100
         self.death_reward = -50
         self.actions = [0, 1]
         self.delay = 2
@@ -61,6 +61,8 @@ class Flappy:
             return self.death_reward
         if score < new_score:
             return self.score_reward
+        if abs(location[1])>0.15:
+            return self.bad_region_reward
         return self.default_reward
     
     def step(self, action):
@@ -85,7 +87,7 @@ class Flappy:
             location = next_location
             action = next_action
             score = new_score
-            self.env.render()
+            #self.env.render()
             if done:
                 break
             steps += reward
@@ -98,7 +100,7 @@ class Flappy:
             self.steps_and_scores[eps_idx] = self.sample_sarsa_episode()
             print("Episode " + str(eps_idx) + ": Steps/Score " + str((int(self.steps_and_scores[eps_idx][0]))) + "/" + str((int(self.steps_and_scores[eps_idx][1]))) + ", eps " + str(self.epsilon))
             if self.test_agent and eps_idx % self.test_every_eps == 0  and eps_idx > 0:
-                #np.savetxt(str(eps_idx)+".csv", self.qtable, fmt="%f", delimiter=",")
+                np.savetxt(str(eps_idx)+".csv", self.qtable, fmt="%f", delimiter=",")
                 self.agent_play()
     
     def sample_q_episode(self):
