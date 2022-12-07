@@ -17,10 +17,10 @@ class Flappy:
         self.gamma = gamma
         self.default_reward = 0
         self.bad_region_reward = -1
-        self.score_reward = 100
+        self.score_reward = 10
         self.death_reward = -50
         self.actions = [0, 1]
-        self.delay = 2
+        self.delay = 1
         self.env = flappy_bird_gym.make("FlappyBird-v0")
         self.nbr_episodes = nbr_episodes
         self.steps_and_scores = np.zeros((nbr_episodes, 2))
@@ -61,8 +61,6 @@ class Flappy:
             return self.death_reward
         if score < new_score:
             return self.score_reward
-        if abs(location[1])>0.15:
-            return self.bad_region_reward
         return self.default_reward
     
     def step(self, action):
@@ -100,7 +98,7 @@ class Flappy:
             self.steps_and_scores[eps_idx] = self.sample_sarsa_episode()
             print("Episode " + str(eps_idx) + ": Steps/Score " + str((int(self.steps_and_scores[eps_idx][0]))) + "/" + str((int(self.steps_and_scores[eps_idx][1]))) + ", eps " + str(self.epsilon))
             if self.test_agent and eps_idx % self.test_every_eps == 0  and eps_idx > 0:
-                np.savetxt(str(eps_idx)+".csv", self.qtable, fmt="%f", delimiter=",")
+                #np.savetxt(str(eps_idx)+".csv", self.qtable, fmt="%f", delimiter=",")
                 self.agent_play()
     
     def sample_q_episode(self):
@@ -123,7 +121,7 @@ class Flappy:
     
     def q_learning(self):
         for eps_idx in range(self.nbr_episodes):
-            if eps_idx % 500 == 0 and eps_idx > 0 == 0:
+            if eps_idx % 1000 == 0 and eps_idx > 0 == 0:
                 self.epsilon = self.epsilon/10
             self.steps_and_scores[eps_idx] = self.sample_q_episode()
             print("Episode " + str(eps_idx) + ": Steps/Score " + str((int(self.steps_and_scores[eps_idx][0]))) + "/" + str((int(self.steps_and_scores[eps_idx][1]))) + ", eps " + str(self.epsilon))

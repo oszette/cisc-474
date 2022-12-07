@@ -38,9 +38,9 @@ def play():
         new_score = info["score"]
         steps += reward
         #print(f"Obs: {obs}" + " Score: " + str(new_score) + " Reward: " + str(get_reward(done, obs, score, new_score)))
-        print(np.round(obs*100))
+        print((np.round(obs*100), action))
         score = new_score
-        clock.tick(10)
+        clock.tick(30)
         obs = next_obs
         if done:
             env.render()
