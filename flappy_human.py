@@ -2,19 +2,25 @@ import time
 
 import pygame
 import flappy_bird_gym
+import numpy as np
+
+def get_reward(done, location, score, new_score):
+    if abs(location[1])>0.1 and not done:
+        return -1
+    if score < new_score and not done:
+        return 5
+    return -10 if done else 0
 
 
 def play():
     # env = gym.make("flappy_bird_gym:FlappyBird-v0")
     env = flappy_bird_gym.make("FlappyBird-v0")
     clock = pygame.time.Clock()
-    score = 0
+    steps = 0
 
     obs = env.reset()
 
-    max_x = 0
-    max_abs_y = 0
-
+    score = 0
     while True:
         env.render()
 
@@ -28,24 +34,17 @@ def play():
                 action = 1
 
         # Processing:
-        obs, reward, done, info = env.step(action)
-
-        score += reward
-        print(f"Obs: {obs}")
-        print(f"Score: {score}\n")
-
-        if obs[0] > max_x:
-            max_x = obs[0]
-        if abs(obs[0]) > max_abs_y:
-            max_abs_y = obs[1]
-
-        clock.tick(15)
-
+        next_obs, reward, done, info = env.step(action)
+        new_score = info["score"]
+        steps += reward
+        #print(f"Obs: {obs}" + " Score: " + str(new_score) + " Reward: " + str(get_reward(done, obs, score, new_score)))
+        print(np.round(obs*100))
+        score = new_score
+        clock.tick(10)
+        obs = next_obs
         if done:
             env.render()
             time.sleep(0.6)
-            print(max_x)
-            print(max_abs_y)
             break
 
     env.close()
